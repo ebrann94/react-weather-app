@@ -14,6 +14,7 @@ const Forecast = (props) => (
                     temperature={data.temp} 
                     windSpeed={data.windSpeed}
                     windDirection={data.windDirection}
+                    img={data.img}
                 />
             ))
         }

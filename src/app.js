@@ -1,7 +1,7 @@
 import React from 'react';
 import CurrentWeather from './components/CurrentWeather';
 import Forecast from './components/Forecast';
-import LocationInput from './components/LocationInput';
+import Search from './components/Search';
 import Header from './components/Header';
 
 class WeatherApp extends React.Component {
@@ -13,7 +13,8 @@ class WeatherApp extends React.Component {
             current: {
                 temp: 0,
                 windSpeed: 0,
-                windDirection: ''
+                windDirection: '',
+                img: undefined
             },
             forecast: [{}, {}, {}, {}, {}]
         };
@@ -43,9 +44,9 @@ class WeatherApp extends React.Component {
                         const forecastObj = {
                             day: new Date(data.dt * 1000).getDay(),
                             temp: tempC,
-                            windSpeed: data.wind.speed,
+                            windSpeed: data.wind.speed.toFixed(1),
                             windDirection: this.calculateCardinalDirection(data.wind.deg),
-                            // img: this.getImage(data.weather.id)
+                            img: this.getImageURL(data.weather[0].id)
                         }
                         newForecast.push(forecastObj);
                     }
@@ -68,9 +69,9 @@ class WeatherApp extends React.Component {
                 const tempC = (data.main.temp - 273.15).toFixed(1);
                 const newCurrent = {
                     temp: tempC,
-                    windSpeed: data.wind.speed,
+                    windSpeed: data.wind.speed.toFixed(1),
                     windDirection: this.calculateCardinalDirection(data.wind.deg),
-                    // img: this.getImageURL(data.weather.id);
+                    img: this.getImageURL(data.weather[0].id)
                 }
 
                 return newCurrent;
@@ -79,16 +80,6 @@ class WeatherApp extends React.Component {
                 this.setState(() => ({current: newData}));
             }); 
     }
-
-    // createWeatherObject(data) {
-    //     const tempC = (data.main.temp - 273.15).toFixed(1);
-    //     return {
-    //         temp: tempC,
-    //         windSpeed: data.wind.speed,
-    //         windDirection: this.calculateCardinalDirection(data.wind.deg),
-    //         // img: this.getImageURL(data.weather.id);
-    //     }
-    // }
 
     calculateCardinalDirection(angle) {
         var val = Math.floor((angle / 22.5) + 0.5);
@@ -135,11 +126,9 @@ class WeatherApp extends React.Component {
             <div className="app-container">
                 <div className="header-container">
                     <Header />
-                    <LocationInput handleLocation={this.handleLocation}/>
+                    <Search handleLocation={this.handleLocation}/>
                 </div>
-                <CurrentWeather 
-                    currentData={this.state.current} 
-                />
+                <CurrentWeather {...this.state.current} />
                 <Forecast forecast={this.state.forecast} />
             </div>
         );

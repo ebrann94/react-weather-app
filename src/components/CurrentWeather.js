@@ -8,11 +8,13 @@ const CurrentWeather = (props) => {
     const month = months[date.getMonth()];
 
     return (
-        <div>
+        <div className="current">
             <h3 className="current__date">{`${day} ${date.getDate()} ${month}`}</h3>
-            <p></p>
-            <p>{props.currentData.temp}&deg;C</p>
-            <p>{props.currentData.windSpeed}mph {props.currentData.windDirection}</p>
+            <img className="current__img" src={`./images/${props.img}`}  />
+            <div className="current__info">
+                <p className="current__wind">{props.windSpeed}mph {props.windDirection}</p>
+                <p className="current__temp">{props.temp}&deg;C</p>
+            </div>
         </div>
 
     )

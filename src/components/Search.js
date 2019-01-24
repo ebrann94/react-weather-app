@@ -1,7 +1,7 @@
 import React from 'react';
 
-const LocationInput = (props) => (
-    <div>
+const Search = (props) => (
+    <div className="location-input">
         <form onSubmit={props.handleLocation}>
             <input type="text" name="location" placeholder="Location"/>
         </form>
@@ -9,4 +9,4 @@ const LocationInput = (props) => (
 
 );
 
-export default LocationInput;
+export default Search;

@@ -1,4 +1,33 @@
 .day-card {
-    border: solid $light-grey 1px;
+    // border: solid $light-grey 1px;
+    background: white;
     padding: 10px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.forecast__date {
+    
+}
+
+.forecast__img {
+    height: 1;
+    flex-grow: 1;
+}
+
+.forecast__info {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.forecast__temp {
+    text-align: right;
+    font-size: 2.5rem;
+}
+
+.forecast__wind {
+    text-align: right;
 }
