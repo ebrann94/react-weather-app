@@ -11,6 +11,7 @@ const CurrentWeather = (props) => {
         <div className="current">
             <h3 className="current__date">{`${day} ${date.getDate()} ${month}`}</h3>
             <img className="current__img" src={`./images/${props.img}`}  />
+            {/* {props.apiError && <p>Location not found, Please enter another.</p>} */}
             <div className="current__info">
                 <p className="current__wind">{props.windSpeed}mph {props.windDirection}</p>
                 <p className="current__temp">{props.temp}&deg;C</p>

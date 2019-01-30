@@ -16,7 +16,8 @@ class WeatherApp extends React.Component {
                 windDirection: '',
                 img: undefined
             },
-            forecast: [{}, {}, {}, {}, {}]
+            forecast: [{}, {}, {}, {}, {}],
+            apiError: false
         };
 
         this.handleLocation = this.handleLocation.bind(this);
@@ -26,59 +27,66 @@ class WeatherApp extends React.Component {
 
     fetchForecastData(location) {
         fetch(`http://api.openweathermap.org/data/2.5/forecast?q=${location}&appid=68efcb4ebe0d4d3baaa1fed66ebb6848`)
-            .then(res => {
-                // Convert the response body to a js object
-                return res.json();
-            })
+            .then(res => res.json())
             .then(results => {
-                if (results.message === 'city not found') {
-
-                }
-
-                const forecastList = results.list;
-                const newForecast = [];
-
-                forecastList.forEach((data) => {
-                    if (data.dt_txt.includes('12:00')) {
-                        const tempC = (data.main.temp - 273.15).toFixed(1);
-                        const forecastObj = {
-                            day: new Date(data.dt * 1000).getDay(),
-                            temp: tempC,
-                            windSpeed: data.wind.speed.toFixed(1),
-                            windDirection: this.calculateCardinalDirection(data.wind.deg),
-                            img: this.getImageURL(data.weather[0].id)
+                if (results.message !== 'city not found') {
+                    const forecastList = results.list;
+                    const newForecast = [];
+                    
+                    forecastList.forEach((data) => {
+                        if (data.dt_txt.includes('12:00')) {
+                            const tempC = (data.main.temp - 273.15).toFixed(1);
+                            const forecastObj = {
+                                day: new Date(data.dt * 1000).getDay(),
+                                temp: tempC,
+                                windSpeed: data.wind.speed.toFixed(1),
+                                windDirection: this.calculateCardinalDirection(data.wind.deg),
+                                img: this.getImageURL(data.weather[0].id)
+                            }
+                            newForecast.push(forecastObj);
                         }
-                        newForecast.push(forecastObj);
-                    }
-                });
-                return newForecast;
-            })
-            .then(newForecast => {
-                // Set the state to the new forecast data
-                this.setState(() => {
-                    return ({forecast: newForecast})
-                });
+
+                        this.setState(() => {
+                            return ({forecast: newForecast});
+                        });
+                    });
+                    return newForecast;
+                } else {
+                    this.setState(() => {
+                        return ({forecast: [{}, {}, {}, {}, {}]});
+                    })
+                }
             });
     }
 
     fetchCurrentData(location) {
         fetch(`http://api.openweathermap.org/data/2.5/weather?q=${location}&appid=68efcb4ebe0d4d3baaa1fed66ebb6848`)
             .then(res => res.json())
-            .then(data => {
-                // Extract data from json
-                const tempC = (data.main.temp - 273.15).toFixed(1);
-                const newCurrent = {
-                    temp: tempC,
-                    windSpeed: data.wind.speed.toFixed(1),
-                    windDirection: this.calculateCardinalDirection(data.wind.deg),
-                    img: this.getImageURL(data.weather[0].id)
+            .then(results => {
+                if (results.message !== 'city not found') {
+                    // Extract data from json
+                    const tempC = (results.main.temp - 273.15).toFixed(1);
+                    const newCurrent = {
+                        temp: tempC,
+                        windSpeed: results.wind.speed.toFixed(1),
+                        windDirection: this.calculateCardinalDirection(results.wind.deg),
+                        img: this.getImageURL(results.weather[0].id)
+                    }
+                    this.setState(() => {
+                        return {
+                            current: newCurrent,
+                            apiError: false
+                        }
+                    });
+                } else {
+                    this.setState(() => {
+                        return {
+                            current: {},
+                            apiError: true
+                        };
+                    });
                 }
-
-                return newCurrent;
-            })
-            .then(newData => {
-                this.setState(() => ({current: newData}));
-            }); 
+            });
     }
 
     calculateCardinalDirection(angle) {
@@ -118,7 +126,7 @@ class WeatherApp extends React.Component {
     }
 
     componentDidUpdate() {
-        console.log(this.state);
+        // console.log(this.state);
     }
 
     render() {
@@ -128,7 +136,7 @@ class WeatherApp extends React.Component {
                     <Header />
                     <Search handleLocation={this.handleLocation}/>
                 </div>
-                <CurrentWeather {...this.state.current} />
+                <CurrentWeather {...this.state.current} apiError={this.state.apiError} />
                 <Forecast forecast={this.state.forecast} />
             </div>
         );
