@@ -26,9 +26,10 @@ class WeatherApp extends React.Component {
     }
 
     fetchForecastData(location) {
-        fetch(`http://api.openweathermap.org/data/2.5/forecast?q=${location}&appid=68efcb4ebe0d4d3baaa1fed66ebb6848`)
+        fetch(`https://cors-anywhere.herokuapp.com/http://api.openweathermap.org/data/2.5/forecast?q=${location}&appid=68efcb4ebe0d4d3baaa1fed66ebb6848`)
             .then(res => res.json())
             .then(results => {
+                console.log('Fetch Working');
                 if (results.message !== 'city not found') {
                     const forecastList = results.list;
                     const newForecast = [];
@@ -60,7 +61,7 @@ class WeatherApp extends React.Component {
     }
 
     fetchCurrentData(location) {
-        fetch(`http://api.openweathermap.org/data/2.5/weather?q=${location}&appid=68efcb4ebe0d4d3baaa1fed66ebb6848`)
+        fetch(`https://cors-anywhere.herokuapp.com/http://api.openweathermap.org/data/2.5/weather?q=${location}&appid=68efcb4ebe0d4d3baaa1fed66ebb6848`)
             .then(res => res.json())
             .then(results => {
                 if (results.message !== 'city not found') {
