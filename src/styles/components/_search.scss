@@ -4,10 +4,17 @@
 
 .location-input form {
     margin: 0;
+    display: inline-block;
 }
 
 .location-input input {
     width: 500px;
     margin: auto;
     padding: 10px;
+}
+
+.api-error {
+    color: red;
+    display: inline-block;
+    padding-left: 10px;
 }

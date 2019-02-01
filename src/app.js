@@ -75,6 +75,7 @@ class WeatherApp extends React.Component {
                     this.setState(() => {
                         return {
                             current: newCurrent,
+                            location: results.name,
                             apiError: false
                         }
                     });
@@ -134,9 +135,12 @@ class WeatherApp extends React.Component {
             <div className="app-container">
                 <div className="header-container">
                     <Header />
-                    <Search handleLocation={this.handleLocation}/>
+                    <Search 
+                        handleLocation={this.handleLocation} 
+                        apiError={this.state.apiError}
+                    />
                 </div>
-                <CurrentWeather {...this.state.current} apiError={this.state.apiError} />
+                <CurrentWeather {...this.state.current} location={this.state.location}  />
                 <Forecast forecast={this.state.forecast} />
             </div>
         );

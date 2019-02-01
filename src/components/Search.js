@@ -5,6 +5,7 @@ const Search = (props) => (
         <form onSubmit={props.handleLocation}>
             <input type="text" name="location" placeholder="Location"/>
         </form>
+        {props.apiError && <p className="api-error">Location not found, please enter another!</p>}
     </div>
 
 );

@@ -1,15 +1,16 @@
 .header-container {
     height: 100%;
     border-bottom: solid 1px $light-grey;
+    padding: 10px;
 
     grid-column: 1;
     grid-row: 1 / span 1;
 
     display: flex;
-    justify-content: space-around;
     align-items: center;
 }
 
 .page-title {
     display: inline-block;
+    margin-right: 10px;
 }
