@@ -95,10 +95,20 @@ h1, h3, h4, p {
   margin: 0;
   display: inline-block; }
 
-.location-input input {
+.location-input__text {
   width: 500px;
+  height: 100%;
   margin: auto;
-  padding: 10px; }
+  padding: 10px;
+  border: rgba(0, 0, 0, 0.1) solid 1px; }
+
+.location-input__submit {
+  max-width: 100%;
+  height: 100%;
+  margin-left: 10px;
+  font-size: 1rem;
+  border: rgba(0, 0, 0, 0.1) solid 1px;
+  cursor: pointer; }
 
 .api-error {
   color: red;
