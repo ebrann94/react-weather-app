@@ -9,10 +9,11 @@ class WeatherApp extends React.Component {
         super();
 
         this.state = {
-            location: '',
+            currentLocation: '',
+            searchterm: '',
             current: {
-                temp: 0,
-                windSpeed: 0,
+                temp: '-',
+                windSpeed: '-',
                 windDirection: '',
                 img: undefined
             },
@@ -29,7 +30,6 @@ class WeatherApp extends React.Component {
         fetch(`https://cors-anywhere.herokuapp.com/http://api.openweathermap.org/data/2.5/forecast?q=${location}&appid=68efcb4ebe0d4d3baaa1fed66ebb6848`)
             .then(res => res.json())
             .then(results => {
-                console.log('Fetch Working');
                 if (results.message !== 'city not found') {
                     const forecastList = results.list;
                     const newForecast = [];
@@ -46,12 +46,11 @@ class WeatherApp extends React.Component {
                             }
                             newForecast.push(forecastObj);
                         }
-
-                        this.setState(() => {
-                            return ({forecast: newForecast});
-                        });
                     });
-                    return newForecast;
+
+                    this.setState(() => {
+                        return ({forecast: newForecast});
+                    });
                 } else {
                     this.setState(() => {
                         return ({forecast: [{}, {}, {}, {}, {}]});
@@ -64,8 +63,8 @@ class WeatherApp extends React.Component {
         fetch(`https://cors-anywhere.herokuapp.com/http://api.openweathermap.org/data/2.5/weather?q=${location}&appid=68efcb4ebe0d4d3baaa1fed66ebb6848`)
             .then(res => res.json())
             .then(results => {
+                // Check if the API returns an error or not
                 if (results.message !== 'city not found') {
-                    // Extract data from json
                     const tempC = (results.main.temp - 273.15).toFixed(1);
                     const newCurrent = {
                         temp: tempC,
@@ -73,11 +72,12 @@ class WeatherApp extends React.Component {
                         windDirection: this.calculateCardinalDirection(results.wind.deg),
                         img: this.getImageURL(results.weather[0].id)
                     }
+                    const currentLocation = `${results.name}, ${results.sys.country}`;
                     this.setState(() => {
                         return {
                             current: newCurrent,
-                            location: results.name,
-                            apiError: false
+                            apiError: false,
+                            currentLocation, 
                         }
                     });
                 } else {
@@ -125,10 +125,11 @@ class WeatherApp extends React.Component {
 
             event.target.elements.location.value = '';
         }
+        this.setState(() => ({serchTerm: location}));
     }
 
     componentDidUpdate() {
-        // console.log(this.state);
+        // console.log(this.state.location);
     }
 
     render() {
@@ -141,7 +142,7 @@ class WeatherApp extends React.Component {
                         apiError={this.state.apiError}
                     />
                 </div>
-                <CurrentWeather {...this.state.current} location={this.state.location}  />
+                <CurrentWeather {...this.state.current} currentLocation={this.state.currentLocation}  />
                 <Forecast forecast={this.state.forecast} />
             </div>
         );

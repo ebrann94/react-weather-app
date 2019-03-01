@@ -2,7 +2,8 @@ import React from 'react';
 
 const Header = () => (
     <div className="page-title">
-        <h3>Please enter a location: </h3>
+        <img src="./images/cloudy.svg" />
+        <h2>Weather Inc.</h2>
     </div>
 );
 

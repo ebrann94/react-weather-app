@@ -9,8 +9,8 @@ const CurrentWeather = (props) => {
 
     return (
         <div className="current">
-            <h3 className="current__date">{props.location ? `${props.location}, `: '' }{`${day} ${date.getDate()} ${month}`}</h3>
-            <img className="current__img" src={`./images/${props.img}`}  />
+            <h3 className="current__date">{props.currentLocation ? `${props.currentLocation} `: '' }{`${day} ${date.getDate()} ${month}`}</h3>
+            {props.img && <img className="current__img" src={`./images/${props.img}`}  />}
             <div className="current__info">
                 <p className="current__wind">{props.windSpeed}mph {props.windDirection}</p>
                 <p className="current__temp">{props.temp}&deg;C</p>
