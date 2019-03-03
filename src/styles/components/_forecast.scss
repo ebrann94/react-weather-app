@@ -12,3 +12,11 @@
     border-top: $light-grey solid 1px;
 
 }
+
+.forecast-loading {
+    background: white;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

@@ -3,6 +3,7 @@ import CurrentWeather from './components/CurrentWeather';
 import Forecast from './components/Forecast';
 import Search from './components/Search';
 import Header from './components/Header';
+import Loader from 'react-loader-spinner';
 
 class WeatherApp extends React.Component {
     constructor() {
@@ -18,15 +19,18 @@ class WeatherApp extends React.Component {
                 img: undefined
             },
             forecast: [{}, {}, {}, {}, {}],
-            apiError: false
+            apiError: false,
+            currentLoading: false,
+            forecastLoading: false
         };
 
         this.handleLocation = this.handleLocation.bind(this);
-        this.fetchCurrentData = this.fetchCurrentData.bind(this);
-        this.fetchForecastData = this.fetchForecastData.bind(this);
+        // this.fetchCurrentData = this.fetchCurrentData.bind(this);
+        // this.fetchForecastData = this.fetchForecastData.bind(this);
     }
 
     fetchForecastData(location) {
+        this.setState(() => ({forecastLoading: true}));
         fetch(`https://cors-anywhere.herokuapp.com/http://api.openweathermap.org/data/2.5/forecast?q=${location}&appid=68efcb4ebe0d4d3baaa1fed66ebb6848`)
             .then(res => res.json())
             .then(results => {
@@ -49,17 +53,24 @@ class WeatherApp extends React.Component {
                     });
 
                     this.setState(() => {
-                        return ({forecast: newForecast});
+                        return ({
+                            forecast: newForecast, 
+                            forecastLoading: false
+                        });
                     });
                 } else {
                     this.setState(() => {
-                        return ({forecast: [{}, {}, {}, {}, {}]});
+                        return ({
+                            forecast: [{}, {}, {}, {}, {}],
+                            forecastLoading: false
+                        });
                     })
                 }
             });
     }
 
     fetchCurrentData(location) {
+        this.setState(() => ({currentLoading: true}))
         fetch(`https://cors-anywhere.herokuapp.com/http://api.openweathermap.org/data/2.5/weather?q=${location}&appid=68efcb4ebe0d4d3baaa1fed66ebb6848`)
             .then(res => res.json())
             .then(results => {
@@ -77,14 +88,16 @@ class WeatherApp extends React.Component {
                         return {
                             current: newCurrent,
                             apiError: false,
-                            currentLocation, 
+                            currentLocation,
+                            currentLoading: false 
                         }
                     });
                 } else {
                     this.setState(() => {
                         return {
                             current: {},
-                            apiError: true
+                            apiError: true,
+                            currentLoading: false
                         };
                     });
                 }
@@ -142,8 +155,13 @@ class WeatherApp extends React.Component {
                         apiError={this.state.apiError}
                     />
                 </div>
-                <CurrentWeather {...this.state.current} currentLocation={this.state.currentLocation}  />
-                <Forecast forecast={this.state.forecast} />
+                {this.state.currentLoading ? 
+                    <div className="current-loading">
+                        ><Loader type="Circles" width="200" height="200"/>
+                    </div> :
+                    <CurrentWeather {...this.state.current} currentLocation={this.state.currentLocation}/>
+                }
+                <Forecast forecast={this.state.forecast} isLoading={this.state.forecastLoading}/>
             </div>
         );
     }
