@@ -25,83 +25,104 @@ class WeatherApp extends React.Component {
         };
 
         this.handleLocation = this.handleLocation.bind(this);
-        // this.fetchCurrentData = this.fetchCurrentData.bind(this);
-        // this.fetchForecastData = this.fetchForecastData.bind(this);
+
+        navigator.geolocation.getCurrentPosition((position) => {
+            this.fetchCurrentLatLong(position.coords.latitude, position.coords.longitude);
+            this.fetchForecastLatLong(position.coords.latitude, position.coords.longitude);
+        });
+    }
+
+    extractForecastData(results) {
+        if (results.message !== 'city not found') {
+            const forecastList = results.list;
+            const newForecast = [];
+            
+            forecastList.forEach((data) => {
+                if (data.dt_txt.includes('12:00')) {
+                    const tempC = (data.main.temp - 273.15).toFixed(1);
+                    const forecastObj = {
+                        day: new Date(data.dt * 1000).getDay(),
+                        temp: tempC,
+                        windSpeed: data.wind.speed.toFixed(1),
+                        windDirection: this.calculateCardinalDirection(data.wind.deg),
+                        img: this.getImageURL(data.weather[0].id)
+                    }
+                    newForecast.push(forecastObj);
+                }
+            });
+
+            this.setState(() => {
+                return ({
+                    forecast: newForecast, 
+                    forecastLoading: false
+                });
+            });
+        } else {
+            this.setState(() => {
+                return ({
+                    forecast: [{}, {}, {}, {}, {}],
+                    forecastLoading: false
+                });
+            })
+        }
+    }
+
+    extractCurrentData(results) {
+         // Check if the API returns an error or not
+         if (results.message !== 'city not found') {
+            const tempC = (results.main.temp - 273.15).toFixed(1);
+            const newCurrent = {
+                temp: tempC,
+                windSpeed: results.wind.speed.toFixed(1),
+                windDirection: this.calculateCardinalDirection(results.wind.deg),
+                img: this.getImageURL(results.weather[0].id)
+            }
+            const currentLocation = `${results.name}, ${results.sys.country}`;
+            this.setState(() => {
+                return {
+                    current: newCurrent,
+                    apiError: false,
+                    currentLocation,
+                    currentLoading: false 
+                }
+            });
+        } else {
+            this.setState(() => {
+                return {
+                    current: {},
+                    apiError: true,
+                    currentLoading: false
+                };
+            });
+        }
     }
 
     fetchForecastData(location) {
         this.setState(() => ({forecastLoading: true}));
         fetch(`https://cors-anywhere.herokuapp.com/http://api.openweathermap.org/data/2.5/forecast?q=${location}&appid=68efcb4ebe0d4d3baaa1fed66ebb6848`)
             .then(res => res.json())
-            .then(results => {
-                if (results.message !== 'city not found') {
-                    const forecastList = results.list;
-                    const newForecast = [];
-                    
-                    forecastList.forEach((data) => {
-                        if (data.dt_txt.includes('12:00')) {
-                            const tempC = (data.main.temp - 273.15).toFixed(1);
-                            const forecastObj = {
-                                day: new Date(data.dt * 1000).getDay(),
-                                temp: tempC,
-                                windSpeed: data.wind.speed.toFixed(1),
-                                windDirection: this.calculateCardinalDirection(data.wind.deg),
-                                img: this.getImageURL(data.weather[0].id)
-                            }
-                            newForecast.push(forecastObj);
-                        }
-                    });
-
-                    this.setState(() => {
-                        return ({
-                            forecast: newForecast, 
-                            forecastLoading: false
-                        });
-                    });
-                } else {
-                    this.setState(() => {
-                        return ({
-                            forecast: [{}, {}, {}, {}, {}],
-                            forecastLoading: false
-                        });
-                    })
-                }
-            });
+            .then(results => this.extractForecastData(results));
     }
 
     fetchCurrentData(location) {
         this.setState(() => ({currentLoading: true}))
         fetch(`https://cors-anywhere.herokuapp.com/http://api.openweathermap.org/data/2.5/weather?q=${location}&appid=68efcb4ebe0d4d3baaa1fed66ebb6848`)
             .then(res => res.json())
-            .then(results => {
-                // Check if the API returns an error or not
-                if (results.message !== 'city not found') {
-                    const tempC = (results.main.temp - 273.15).toFixed(1);
-                    const newCurrent = {
-                        temp: tempC,
-                        windSpeed: results.wind.speed.toFixed(1),
-                        windDirection: this.calculateCardinalDirection(results.wind.deg),
-                        img: this.getImageURL(results.weather[0].id)
-                    }
-                    const currentLocation = `${results.name}, ${results.sys.country}`;
-                    this.setState(() => {
-                        return {
-                            current: newCurrent,
-                            apiError: false,
-                            currentLocation,
-                            currentLoading: false 
-                        }
-                    });
-                } else {
-                    this.setState(() => {
-                        return {
-                            current: {},
-                            apiError: true,
-                            currentLoading: false
-                        };
-                    });
-                }
-            });
+            .then(results => this.extractCurrentData(results));
+    }
+
+    fetchForecastLatLong(latitude, longitude) {
+        this.setState(() => ({forecastLoading: true}));
+        fetch(`https://cors-anywhere.herokuapp.com/http://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=68efcb4ebe0d4d3baaa1fed66ebb6848`)
+            .then(res => res.json())
+            .then(results => this.extractForecastData(results))
+    }
+
+    fetchCurrentLatLong(latitude, longitude) {
+        this.setState(() => ({currentLoading: true}));
+        fetch(`https://cors-anywhere.herokuapp.com/http://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=68efcb4ebe0d4d3baaa1fed66ebb6848`)
+            .then(res => res.json())
+            .then(results => this.extractCurrentData(results));
     }
 
     calculateCardinalDirection(angle) {
@@ -157,8 +178,9 @@ class WeatherApp extends React.Component {
                 </div>
                 {this.state.currentLoading ? 
                     <div className="current-loading">
-                        ><Loader type="Circles" width="200" height="200"/>
-                    </div> :
+                        <Loader type="Circles" width="200" height="200"/>
+                    </div> 
+                :
                     <CurrentWeather {...this.state.current} currentLocation={this.state.currentLocation}/>
                 }
                 <Forecast forecast={this.state.forecast} isLoading={this.state.forecastLoading}/>
