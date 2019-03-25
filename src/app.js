@@ -25,11 +25,6 @@ class WeatherApp extends React.Component {
         };
 
         this.handleLocation = this.handleLocation.bind(this);
-
-        navigator.geolocation.getCurrentPosition((position) => {
-            this.fetchCurrentLatLong(position.coords.latitude, position.coords.longitude);
-            this.fetchForecastLatLong(position.coords.latitude, position.coords.longitude);
-        });
     }
 
     extractForecastData(results) {
@@ -166,6 +161,13 @@ class WeatherApp extends React.Component {
         // console.log(this.state.location);
     }
 
+    componentDidMount() {
+        navigator.geolocation.getCurrentPosition((position) => {
+            this.fetchCurrentLatLong(position.coords.latitude, position.coords.longitude);
+            this.fetchForecastLatLong(position.coords.latitude, position.coords.longitude);
+        });
+    }
+
     render() {
         return (
             <div className="app-container">
@@ -176,13 +178,13 @@ class WeatherApp extends React.Component {
                         apiError={this.state.apiError}
                     />
                 </div>
-                {this.state.currentLoading ? 
+                {this.state.currentLoading ? (
                     <div className="current-loading">
                         <Loader type="Circles" width="200" height="200"/>
                     </div> 
-                :
+                ) : (
                     <CurrentWeather {...this.state.current} currentLocation={this.state.currentLocation}/>
-                }
+                )}
                 <Forecast forecast={this.state.forecast} isLoading={this.state.forecastLoading}/>
             </div>
         );
