@@ -20,8 +20,8 @@ class WeatherApp extends React.Component {
             },
             forecast: [{}, {}, {}, {}, {}],
             apiError: false,
-            currentLoading: false,
-            forecastLoading: false
+            currentLoading: true,
+            forecastLoading: true
         };
 
         this.handleLocation = this.handleLocation.bind(this);
@@ -32,7 +32,7 @@ class WeatherApp extends React.Component {
             const forecastList = results.list;
             const newForecast = [];
             
-            forecastList.forEach((data) => {
+            forecastList.forEach(data => {
                 if (data.dt_txt.includes('12:00')) {
                     const tempC = (data.main.temp - 273.15).toFixed(1);
                     const forecastObj = {
@@ -146,19 +146,17 @@ class WeatherApp extends React.Component {
 
     handleLocation(event) {
         event.preventDefault();
-        const location = event.target.elements.location.value
+        const target = event.target;
+        const location = target.location.value
         if (location) {
             const encodedLocation = encodeURIComponent(location);
             this.fetchForecastData(encodedLocation);
             this.fetchCurrentData(encodedLocation);
 
-            event.target.elements.location.value = '';
+            target.location.value = '';
         }
+        target.location.blur();
         this.setState(() => ({serchTerm: location}));
-    }
-
-    componentDidUpdate() {
-        // console.log(this.state.location);
     }
 
     componentDidMount() {
