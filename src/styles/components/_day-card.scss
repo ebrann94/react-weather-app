@@ -1,5 +1,4 @@
 .day-card {
-    // border: solid $light-grey 1px;
     background: white;
     padding: 10px;
 
@@ -31,4 +30,10 @@
 .forecast__wind {
     text-align: right;
     color: $medium-grey;
+}
+
+@media only screen and (max-width: $break-point) {
+    .day-card {
+        height: 150px;
+    }
 }
