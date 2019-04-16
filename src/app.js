@@ -144,18 +144,11 @@ class WeatherApp extends React.Component {
         }
     }
 
-    handleLocation(event) {
-        event.preventDefault();
-        const target = event.target;
-        const location = target.location.value
-        if (location) {
-            const encodedLocation = encodeURIComponent(location);
-            this.fetchForecastData(encodedLocation);
-            this.fetchCurrentData(encodedLocation);
-
-            target.location.value = '';
-        }
-        target.location.blur();
+    handleLocation(location) {
+        const encodedLocation = encodeURIComponent(location);
+        this.fetchForecastData(encodedLocation);
+        this.fetchCurrentData(encodedLocation);
+        
         this.setState(() => ({serchTerm: location}));
     }
 

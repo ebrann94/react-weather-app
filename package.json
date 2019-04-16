@@ -28,8 +28,8 @@
   },
   "dependencies": {
     "express": "^4.16.4",
-    "react": "^16.7.0",
-    "react-dom": "^16.7.0",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
     "react-loader-spinner": "^2.3.0"
   }
 }
