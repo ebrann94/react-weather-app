@@ -7,3 +7,5 @@ That data is then presented using a webpage built with React.js.
 
 To use it simply type in a city name or geographic coordinates into the input and submit.
 The app will then fetch the current weather and a 5-day forecast.
+
+[Live Demo](https://ebrann-weather-app.herokuapp.com/)
