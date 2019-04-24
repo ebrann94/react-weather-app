@@ -3,7 +3,6 @@ import DayCard from './DayCard'
 import Loader from 'react-loader-spinner';
 
 const Forecast = ({ forecast, isLoading}) => {
-    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
     return (
         <div className="forecast-container">
@@ -16,7 +15,7 @@ const Forecast = ({ forecast, isLoading}) => {
                     :
                         <DayCard 
                             key={i} 
-                            day={days[data.day]}
+                            day={data.day}
                             temperature={data.temp} 
                             windSpeed={data.windSpeed}
                             windDirection={data.windDirection}

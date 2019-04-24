@@ -36,7 +36,7 @@ class WeatherApp extends React.Component {
                 if (data.dt_txt.includes('12:00')) {
                     const tempC = (data.main.temp - 273.15).toFixed(1);
                     const forecastObj = {
-                        day: new Date(data.dt * 1000).getDay(),
+                        day: new Date(data.dt * 1000).toLocaleString('en-GB', { weekday: 'long' }),
                         temp: tempC,
                         windSpeed: data.wind.speed.toFixed(1),
                         windDirection: this.calculateCardinalDirection(data.wind.deg),

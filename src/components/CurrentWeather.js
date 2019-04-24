@@ -1,11 +1,10 @@
 import React from 'react';
 
 const CurrentWeather = (props) => {
-    const days = ['Sun', 'Mon', 'Tues', 'Wed', 'Thurs', 'Fri', 'Sat'];
-    const months = ['January', 'Feburary', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     const date = new Date();
-    const day = days[date.getDay()];
-    const month = months[date.getMonth()];
+
+    const day = date.toLocaleString('en-GB', {weekday: 'long'});
+    const month = date.toLocaleString('en-GB', { month: 'long' });
 
     return (
         <div className="current">

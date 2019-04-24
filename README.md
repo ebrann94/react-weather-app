@@ -1,4 +1,4 @@
-# react-weather-app
+# React Weather App
 
 This is a simple web app for getting and displaying weather information.
 
